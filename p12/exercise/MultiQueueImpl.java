@@ -67,10 +67,10 @@ public class MultiQueueImpl<T, Q> implements MultiQueue<T, Q> {
         List <T> dequeuedElements = new ArrayList<>();
         final Queue<T> selectedQueue = queues.get(queue);
 
-        T elem = selectedQueue.poll();
-        do {
+        T elem;
+        while ((elem = selectedQueue.poll()) != null) {
             dequeuedElements.add(elem);
-        } while ((elem = selectedQueue.poll()) != null);
+        }
 
         return dequeuedElements;
     }
@@ -88,10 +88,10 @@ public class MultiQueueImpl<T, Q> implements MultiQueue<T, Q> {
 
         Queue<T> transferQueue = queues.get(transferQueueKey);
         final Queue<T> selectedQueue = queues.get(queue);
-        T elem = selectedQueue.poll();
-        do {
+        T elem;
+        while ((elem = selectedQueue.poll()) != null) {
             transferQueue.add(elem);
-        } while ((elem = selectedQueue.poll()) != null);
+        }
 
     }
 
