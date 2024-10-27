@@ -44,7 +44,7 @@ public class MultiQueueImpl<T, Q> implements MultiQueue<T, Q> {
     public Map<Q, T> dequeueOneFromAllQueues() {
         Map<Q, T> dequeuedElements = new HashMap<>();
         for (Q queueKey : queues.keySet()) {
-            dequeuedElements.put(queueKey, queues.get(queueKey).remove());
+            dequeuedElements.put(queueKey, queues.get(queueKey).poll());
         }
         return dequeuedElements;
     }
@@ -67,10 +67,10 @@ public class MultiQueueImpl<T, Q> implements MultiQueue<T, Q> {
         List <T> dequeuedElements = new ArrayList<>();
         final Queue<T> selectedQueue = queues.get(queue);
 
-        T elem = selectedQueue.remove();
+        T elem = selectedQueue.poll();
         do {
             dequeuedElements.add(elem);
-        } while ((elem = selectedQueue.remove()) != null);
+        } while ((elem = selectedQueue.poll()) != null);
 
         return dequeuedElements;
     }
@@ -88,10 +88,10 @@ public class MultiQueueImpl<T, Q> implements MultiQueue<T, Q> {
 
         Queue<T> transferQueue = queues.get(transferQueueKey);
         final Queue<T> selectedQueue = queues.get(queue);
-        T elem = selectedQueue.remove();
+        T elem = selectedQueue.poll();
         do {
             transferQueue.add(elem);
-        } while ((elem = selectedQueue.remove()) != null);
+        } while ((elem = selectedQueue.poll()) != null);
 
     }
 
