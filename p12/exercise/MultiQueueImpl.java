@@ -30,14 +30,14 @@ public class MultiQueueImpl<T, Q> implements MultiQueue<T, Q> {
 
     @Override
     public void enqueue(T elem, Q queue) {
-        if (!queues.keySet().contains(queue)) throw new IllegalArgumentException("Queue already available");
+        if (!queues.keySet().contains(queue)) throw new IllegalArgumentException("Queue not available");
         queues.get(queue).add(elem);
     }
 
     @Override
     public T dequeue(Q queue) {
-        if (!queues.keySet().contains(queue)) throw new IllegalArgumentException("Queue already available");
-        return queues.get(queue).remove();
+        if (!queues.keySet().contains(queue)) throw new IllegalArgumentException("Queue not available");
+        return queues.get(queue).poll();
     }
 
     @Override
@@ -62,7 +62,7 @@ public class MultiQueueImpl<T, Q> implements MultiQueue<T, Q> {
 
     @Override
     public List<T> dequeueAllFromQueue(Q queue) {
-        if (!queues.keySet().contains(queue)) throw new IllegalArgumentException("Queue already available");
+        if (!queues.keySet().contains(queue)) throw new IllegalArgumentException("Queue not available");
 
         List <T> dequeuedElements = new ArrayList<>();
         final Queue<T> selectedQueue = queues.get(queue);
@@ -77,7 +77,7 @@ public class MultiQueueImpl<T, Q> implements MultiQueue<T, Q> {
 
     @Override
     public void closeQueueAndReallocate(Q queue) {
-        if (!queues.keySet().contains(queue)) throw new IllegalArgumentException("Queue already available");
+        if (!queues.keySet().contains(queue)) throw new IllegalArgumentException("Queue not available");
         if (queues.size() < 2) throw new IllegalStateException("No alternative available");
         
         final Iterator<Q> myIterator = queues.keySet().iterator();
