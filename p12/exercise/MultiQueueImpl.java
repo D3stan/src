@@ -93,6 +93,8 @@ public class MultiQueueImpl<T, Q> implements MultiQueue<T, Q> {
             transferQueue.add(elem);
         }
 
+        queues.remove(queue);
+
     }
 
 }
