@@ -1,27 +1,30 @@
 package p12.exercise;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-public class MultiQueueImpl<T, Q> implements MultiQueue<T, Q>{
+public class MultiQueueImpl<T, Q> implements MultiQueue<T, Q> {
+
+    private Map<Q, Queue<T>> queues;
+
+    public MultiQueueImpl() {
+        this.queues = new HashMap<>();
+    }
 
     @Override
     public Set<Q> availableQueues() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'availableQueues'");
+        return this.queues.keySet();
     }
 
     @Override
     public void openNewQueue(Q queue) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'openNewQueue'");
+        if (queues.keySet().contains(queue)) throw new IllegalArgumentException("Queue already available");
+        Queue<T> newQueue = new PriorityQueue<>();
+        queues.put(queue, newQueue);
     }
 
     @Override
     public boolean isQueueEmpty(Q queue) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isQueueEmpty'");
+        return queues.get(queue).poll() == null;
     }
 
     @Override
