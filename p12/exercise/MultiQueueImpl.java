@@ -24,43 +24,75 @@ public class MultiQueueImpl<T, Q> implements MultiQueue<T, Q> {
 
     @Override
     public boolean isQueueEmpty(Q queue) {
+        if (!queues.keySet().contains(queue)) throw new IllegalArgumentException("Queue not available");
         return queues.get(queue).poll() == null;
     }
 
     @Override
     public void enqueue(T elem, Q queue) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'enqueue'");
+        if (!queues.keySet().contains(queue)) throw new IllegalArgumentException("Queue already available");
+        queues.get(queue).add(elem);
     }
 
     @Override
     public T dequeue(Q queue) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'dequeue'");
+        if (!queues.keySet().contains(queue)) throw new IllegalArgumentException("Queue already available");
+        return queues.get(queue).remove();
     }
 
     @Override
     public Map<Q, T> dequeueOneFromAllQueues() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'dequeueOneFromAllQueues'");
+        Map<Q, T> dequeuedElements = new HashMap<>();
+        for (Q queueKey : queues.keySet()) {
+            dequeuedElements.put(queueKey, queues.get(queueKey).remove());
+        }
+        return dequeuedElements;
     }
 
     @Override
     public Set<T> allEnqueuedElements() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'allEnqueuedElements'");
+        Set<T> enqueuedElements = new HashSet<>();
+        for (Q queueKey : queues.keySet()) {
+            for (T t : queues.get(queueKey)) {
+                enqueuedElements.add(t);
+            }
+        }
+        return enqueuedElements;
     }
 
     @Override
     public List<T> dequeueAllFromQueue(Q queue) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'dequeueAllFromQueue'");
+        if (!queues.keySet().contains(queue)) throw new IllegalArgumentException("Queue already available");
+
+        List <T> dequeuedElements = new ArrayList<>();
+        final Queue<T> selectedQueue = queues.get(queue);
+
+        T elem = selectedQueue.remove();
+        do {
+            dequeuedElements.add(elem);
+        } while ((elem = selectedQueue.remove()) != null);
+
+        return dequeuedElements;
     }
 
     @Override
     public void closeQueueAndReallocate(Q queue) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'closeQueueAndReallocate'");
+        if (!queues.keySet().contains(queue)) throw new IllegalArgumentException("Queue already available");
+        if (queues.size() < 2) throw new IllegalStateException("No alternative available");
+        
+        final Iterator<Q> myIterator = queues.keySet().iterator();
+        Q transferQueueKey = myIterator.next();
+        if (transferQueueKey.equals(queue)) {
+            transferQueueKey = myIterator.next();
+        }
+
+        Queue<T> transferQueue = queues.get(transferQueueKey);
+        final Queue<T> selectedQueue = queues.get(queue);
+        T elem = selectedQueue.remove();
+        do {
+            transferQueue.add(elem);
+        } while ((elem = selectedQueue.remove()) != null);
+
     }
 
 }
